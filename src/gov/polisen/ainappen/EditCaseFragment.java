@@ -16,11 +16,12 @@ import android.widget.ArrayAdapter;
 import android.widget.CalendarView;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 public class EditCaseFragment extends Fragment {
 
-	private Case	selectedCase;
-	private View	rootView;
+	private Case selectedCase;
+	private View rootView;
 
 	public EditCaseFragment() {
 		// Empty constructor required for fragment subclasses
@@ -47,13 +48,12 @@ public class EditCaseFragment extends Fragment {
 		// Get item selected and deal with it
 		switch (item.getItemId()) {
 		case android.R.id.home:
-
 			showSaveOptionsPopUp();
-
 			return true;
-
 		case R.id.saveeditcase_item:
-			saveEditedCase();
+			if (!saveEditedCase()) {
+				return false;
+			}
 			getActivity().onBackPressed();
 			return true;
 		}
@@ -72,7 +72,10 @@ public class EditCaseFragment extends Fragment {
 			@Override
 			public void onClick(DialogInterface dialog, int id) {
 				dialog.cancel();
-				saveEditedCase();
+				// checks required fields
+				if (!saveEditedCase()) {
+					return;
+				}
 				getActivity().onBackPressed();
 			}
 		});
@@ -115,11 +118,27 @@ public class EditCaseFragment extends Fragment {
 		spinner.setAdapter(adapter);
 	}
 
+	private boolean validFields() {
+		// checks and toasts if commander field is empty
+		if (rootView.findViewById(R.id.commander_text_edit) == null) {
+			Toast.makeText(getActivity(),
+					(CharSequence) "Ingen befälhavare ifylld!",
+					Toast.LENGTH_SHORT).show();
+			return false;
+		} else {
+			return true;
+		}
+	}
+
 	/**
 	 * Saves the status of the textfields to the selectcase object and to the
 	 * database.
 	 */
-	private void saveEditedCase() {
+	private boolean saveEditedCase() {
+		// checks if reqired fields are filled
+		if (!validFields()) {
+			return false;
+		}
 		EditText crimeClassification = (EditText) rootView
 				.findViewById(R.id.crime_classification_text_edit);
 		selectedCase.setCrimeClassification(crimeClassification.getText()
@@ -142,6 +161,7 @@ public class EditCaseFragment extends Fragment {
 
 		LocalDBHandler localDBHandler = new LocalDBHandler(getActivity());
 		localDBHandler.editCase(selectedCase, getActivity());
+		return true;
 	}
 
 	/**

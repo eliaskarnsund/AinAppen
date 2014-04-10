@@ -64,8 +64,8 @@ public class AddCaseFragment extends Fragment {
 	}
 
 	private boolean validFields() {
-		// TODO Auto-generated method stub
-		if (rootView.findViewById(R.id.commander_text_edit) != null) {
+		// checks and toasts if commander field is empty
+		if (rootView.findViewById(R.id.commander_text_edit) == null) {
 			Toast.makeText(getActivity(), (CharSequence) "Ingen befälhavare ifylld!",
 					Toast.LENGTH_SHORT).show();
 			return false;
@@ -75,6 +75,7 @@ public class AddCaseFragment extends Fragment {
 	}
 
 	private boolean saveEditedCase() {
+		// checks if reqired fields are filled
 		if (!validFields()) {
 			return false;
 		}
@@ -207,6 +208,7 @@ public class AddCaseFragment extends Fragment {
 			@Override
 			public void onClick(DialogInterface dialog, int id) {
 				dialog.cancel();
+				// checks required fields
 				if (!saveEditedCase()) {
 					return;
 				}
