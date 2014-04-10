@@ -51,19 +51,33 @@ public class AddCaseFragment extends Fragment {
 		// Get item selected and deal with it
 		switch (item.getItemId()) {
 		case android.R.id.home:
-
 			showSaveOptionsPopUp();
-
 			return true;
 		case R.id.saveeditcase_item:
-			saveEditedCase();
+			if (!saveEditedCase()) {
+				return false;
+			}
 			getActivity().onBackPressed();
 			return true;
 		}
 		return false;
 	}
 
-	private void saveEditedCase() {
+	private boolean validFields() {
+		// TODO Auto-generated method stub
+		if (rootView.findViewById(R.id.commander_text_edit) != null) {
+			Toast.makeText(getActivity(), (CharSequence) "Ingen befälhavare ifylld!",
+					Toast.LENGTH_SHORT).show();
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	private boolean saveEditedCase() {
+		if (!validFields()) {
+			return false;
+		}
 		// read from all the textfields in the GUI
 		textFieldSetter();
 		// Create a caseObject from the set fields
@@ -80,6 +94,8 @@ public class AddCaseFragment extends Fragment {
 		 */
 		getActivity().getFragmentManager().popBackStack();
 		((MainActivity) getActivity()).gotoCase(rootView, caseToBeAdded);
+
+		return true;
 	}
 
 	/*
@@ -191,7 +207,10 @@ public class AddCaseFragment extends Fragment {
 			@Override
 			public void onClick(DialogInterface dialog, int id) {
 				dialog.cancel();
-				saveEditedCase();
+				if (!saveEditedCase()) {
+					return;
+				}
+
 				getActivity().onBackPressed();
 			}
 		});
