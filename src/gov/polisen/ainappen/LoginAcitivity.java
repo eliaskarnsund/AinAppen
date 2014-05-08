@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +28,7 @@ public class LoginAcitivity extends Activity {
 		setContentView(R.layout.activity_login_acitivity);
 		if (savedInstanceState == null) {
 			getFragmentManager().beginTransaction()
-			.add(R.id.container, new PlaceholderFragment()).commit();
+					.add(R.id.container, new PlaceholderFragment()).commit();
 		}
 	}
 
@@ -37,12 +38,12 @@ public class LoginAcitivity extends Activity {
 	@SuppressLint("ValidFragment")
 	public class PlaceholderFragment extends Fragment {
 
-		EditText		userNameText;
-		EditText		passwordText;
-		private Button	quickLogButton;
-		private Button	databaseLoginButton;
-		View			rootView;
-		LoginDBHandler	ldh;
+		EditText userNameText;
+		EditText passwordText;
+		private Button quickLogButton;
+		private Button databaseLoginButton;
+		View rootView;
+		LoginDBHandler ldh;
 
 		public PlaceholderFragment() {
 
@@ -93,8 +94,11 @@ public class LoginAcitivity extends Activity {
 			Random rnd = new Random();
 			int dId = rnd.nextInt(1000000);
 			appData.setUser(new User(dId, userNameText.getText().toString()));
-			//appData.getUser().setUserName((userNameText.getText().toString()));
-			//appData.setDeviceID(dId);
+			Log.d("HELLO", " " + appData.getDeviceID());
+			if (appData.getDeviceID() == 0)
+				new GetNewDevice(rootView);
+			// appData.getUser().setUserName((userNameText.getText().toString()));
+			// appData.setDeviceID(dId);
 			appData.setPassword(passwordText.getText().toString());
 		}
 
@@ -119,8 +123,8 @@ public class LoginAcitivity extends Activity {
 
 		public void makeFailedToast() {
 			String toastMessage = "Fel användarnamn eller lösenord!";
-			Toast.makeText(getActivity(), toastMessage,
-					Toast.LENGTH_LONG).show();
+			Toast.makeText(getActivity(), toastMessage, Toast.LENGTH_LONG)
+					.show();
 		}
 
 		public void textFieldSetter() {
@@ -156,7 +160,7 @@ public class LoginAcitivity extends Activity {
 				tempHashedPw2 = hs.getSHA256Hash(tempSalt2 + tempPassword2);
 			} catch (NoSuchAlgorithmException e1) {
 				Toast.makeText(getActivity(), noAlgorithmTxt, Toast.LENGTH_LONG)
-				.show();
+						.show();
 			}
 			tempLogin1.setHashedPassword(tempHashedPw1);
 			tempLogin2.setHashedPassword(tempHashedPw2);
